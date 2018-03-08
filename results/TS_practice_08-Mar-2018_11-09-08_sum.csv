@@ -1,0 +1,2 @@
+listener,date,sTime,endTime,type,stimuli,masker,condition,TestType,startSNR,feedback,ear,changes,VolumeSettings,manipulation,lateralised,ITD,version,finish,uRevs,sdRevs,nRevs,nTrials,totKWc,totKW,uKW,sdKW
+TS,08-Mar-2018,11:09:08,11:09:30,IEEE,IEEE,maskers\SpNz44100,any,adaptiveUp,0,0,B,1 1 1 1 1 0 ,,inverted,signal, +0.0,HHL

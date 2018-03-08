@@ -1,0 +1,41 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0 
+xmax = 2.131156462585034 
+tiers? <exists> 
+size = 1 
+item []: 
+    item [1]:
+        class = "TextTier" 
+        name = "text" 
+        xmin = 0 
+        xmax = 2.131156462585034 
+        points: size = 9 
+        points [1]:
+            number = 0.14193796741327627 
+            mark = "a" 
+        points [2]:
+            number = 0.19175675187278227 
+            mark = "rod" 
+        points [3]:
+            number = 0.49465496138657866 
+            mark = "is" 
+        points [4]:
+            number = 0.6361403092515756 
+            mark = "used" 
+        points [5]:
+            number = 0.9111399994680486 
+            mark = "to" 
+        points [6]:
+            number = 1.038676087684384 
+            mark = "catch" 
+        points [7]:
+            number = 1.3674800651171233 
+            mark = "pink" 
+        points [8]:
+            number = 1.5846899653605693 
+            mark = "salmon" 
+        points [9]:
+            number = 1.9772619869014765 
+            mark = "" 

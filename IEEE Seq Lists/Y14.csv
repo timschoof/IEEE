@@ -1,0 +1,4 @@
+nBlocks,nPracticeTrials,practice,TestType,ear,SentenceDirectory,InitialSNR_dB,START_change_dB,AudioFeedback,MaxTrials,ListNumber,TrackingLevel,NoiseFile,StartMessage,condition
+0,5,5,adaptiveUp,B,IEEE,0,6,0,5,8,50,SpNz44100,Ready?,SS
+1,0,0,adaptiveUp,B,IEEE,-10,6,0,20,21,50,SpNz44100,Ready?,SS
+1,0,0,adaptiveUp,B,IEEE,-10,6,0,20,19,50,SpNz44100,Ready?,SS
