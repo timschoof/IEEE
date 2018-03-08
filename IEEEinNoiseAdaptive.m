@@ -604,9 +604,11 @@ finish_message(1,final_message_string);
 waitforbuttonpress;
 % FinishButton; % indicate test is over
 
-% close psych toolbox audio
-PsychPortAudio('DeleteBuffer');
-PsychPortAudio('Close');
+if player==1
+    % close psych toolbox audio
+    PsychPortAudio('DeleteBuffer');
+    PsychPortAudio('Close');
+end
 
 function name = construct_filename(SentenceIndicator,list, sentence)
 if strcmp(SentenceIndicator([1:3]),'IEE')
