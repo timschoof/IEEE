@@ -91,7 +91,7 @@ function IEEEinNoiseAdaptive(varargin)
 
 %% initialisations
 VERSION='HHL';
-player = 0; % are you using playrec? yes = 1, no = 0
+player = 1; % are you using playrec? yes = 1, no = 0
 
 DEBUG=0;
 OutputDir = 'results';
@@ -114,9 +114,10 @@ rand('twister', sum(100*clock));
 
 %% Get audio device ID based on the USB name of the device.
 if player == 1 % if you're using playrec
-    %dev = playrec('getDevices');
-    playDeviceInd = 50; % RME FireFace channels 3+4
-    recDeviceInd = 50;
+    dev = playrec('getDevices');
+    d = find( cellfun(@(x)isequal(x,'ASIO Fireface USB'),{dev.name}) ); % find device of interest - RME FireFace channels 3+4
+    playDeviceInd = dev(d).deviceID; 
+    recDeviceInd = dev(d).deviceID;
 end
 
 %% get control parameters one way or t'other
@@ -285,8 +286,17 @@ if strcmp(TestType,'adaptiveUp')
 end
 
 %% wait to start
+%% wait to start
 Image = imread('benzilan.jpg','jpg');
-GoOrMessageButton('String', StartMessage, Image)
+% extract level from VolumeSettingsFile
+Num = regexp(VolumeSettingsFile,'\d');
+Level = VolumeSettingsFile(Num);
+% Print appropriate message on Go button
+if str2double(Level) < 60
+    GoOrMessageButton('String', 'This will be rather quiet', Image)
+else
+    GoOrMessageButton('String', 'This will be fairly loud', Image)
+end
 
 nCorrect=[]; % keep track of the number of key words correct in each sentence
 %% run the test (do adaptive tracking until stop criterion)
@@ -388,7 +398,6 @@ while (num_turns<FINAL_TURNS  && limit<=MaxBumps && trial<MaxTrials)
     % intialize playrec
     if player == 1 % if you're using playrec
         if playrec('isInitialised')
-            fprintf('Resetting playrec as previously initialised\n');
             playrec('reset');
         end
         playrec('init', Fs, playDeviceInd, recDeviceInd);

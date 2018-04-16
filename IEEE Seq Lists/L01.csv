@@ -1,6 +1,0 @@
-nBlocks,nPracticeTrials,practice,TestType,ear,SentenceDirectory,InitialSNR_dB,MaxTrials,ListNumber,NoiseFile,VolumeSettingsFile,itd_invert,lateralize
-0,5,5,adaptiveUp,B,IEEE,0,5,8,SpNz44100,VolumeSettings.txt,inverted,signal
-1,0,0,adaptiveUp,B,IEEE,-10,20,19,SpNz44100,VolumeSettings.txt,inverted,signal
-1,0,0,adaptiveUp,B,IEEE,-10,20,21,SpNz44100,VolumeSettings.txt,inverted,signal
-1,0,0,adaptiveUp,B,IEEE,-10,20,23,SpNz44100,VolumeSettings.txt,none,none
-1,0,0,adaptiveUp,B,IEEE,-10,20,25,SpNz44100,VolumeSettings.txt,none,none
