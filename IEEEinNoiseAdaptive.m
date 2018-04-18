@@ -286,17 +286,9 @@ if strcmp(TestType,'adaptiveUp')
 end
 
 %% wait to start
-%% wait to start
-Image = imread('benzilan.jpg','jpg');
-% extract level from VolumeSettingsFile
-Num = regexp(VolumeSettingsFile,'\d');
-Level = VolumeSettingsFile(Num);
+Image = imread('DP119115(640x472).jpg','jpg');
 % Print appropriate message on Go button
-if str2double(Level) < 60
-    GoOrMessageButton('String', 'This will be rather quiet', Image)
-else
-    GoOrMessageButton('String', 'This will be fairly loud', Image)
-end
+GoOrMessageButton('String', StartMessage, Image)
 
 nCorrect=[]; % keep track of the number of key words correct in each sentence
 %% run the test (do adaptive tracking until stop criterion)
