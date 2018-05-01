@@ -125,7 +125,7 @@ if nargin==0
     StartMessage='Here we go!';
     [OutFile, TestType, ear, SentenceDirectory, InitialSNR_dB, START_change_dB, ...
         AudioFeedback, MaxTrials, ListNumber, TrackingLevel, ...
-        NoiseFile,VolumeSettingsFile,itd_invert,lateralize,ITD_us] = TestSpecs(mInputArgs);
+        NoiseFile,itd_invert,VolumeSettingsFile,lateralize,ITD_us,RMEslider] = TestSpecs(mInputArgs);
     
 else % pick up defaults and specified values from args
     if ~rem(nargin,2)
@@ -176,6 +176,25 @@ end
 
 %% Settings for level
 [InRMS, OutRMS] = SetLevels(VolumeSettingsFile);
+
+% extract level from VolumeSettingsFile
+Num = regexp(VolumeSettingsFile,'\d');
+Level = VolumeSettingsFile(Num);
+    
+%% Set RME Slider
+if strcmp(RMEslider,'TRUE')
+    % read in RME settings file
+    RMEsetting=robustcsvread('RMEsettings.csv');
+    % select columns with relevant info
+    LevelCol=strmatch('dBSPL',strvcat(RMEsetting{1,:}));
+    SliderCol=strmatch('slider',strvcat(RMEsetting{1,:}));
+    % find index of dBSPL level
+    index = find(strcmp({RMEsetting{:,LevelCol}}, num2str(Level)));
+    % find the corresponding RME slider setting
+    RMEattn = RMEsetting{index,SliderCol};
+    % set RME slider
+    SetMainSlider(str2double(RMEattn))
+end
 
 %% set rules for adaptively altering levels
 if strcmp(SentenceType,'IEE')|| strcmp(SentenceType,'ABC')
@@ -428,10 +447,6 @@ while (num_turns<FINAL_TURNS  && limit<=MaxBumps && trial<MaxTrials)
     
     AllCorrect=0;
         
-    % extract level from VolumeSettingsFile
-    Num = regexp(VolumeSettingsFile,'\d');
-    Level = VolumeSettingsFile(Num);
-    
     fout = fopen(OutFile, 'at');
     % print out relevant information
     % fprintf(fout, 'listener,date,sTime,trial,targets,masker,VolumeSettings,manipulation,lateralized,ITD,SNR,wave,w1,w2,w3,total,rTime,revs');

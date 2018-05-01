@@ -26,6 +26,7 @@ p.addParamValue('VolumeSettingsFile', 'VolumeSettings-80dBSPL.txt', @ischar);
 p.addParamValue('itd_invert', 'inverted', @ischar); % options: ITD = interaural time difference, inverted = invert polarity in one ear, none = no manipulation
 p.addParamValue('lateralize', 'signal', @ischar); % apply ITD or inverted polarity manipulation to: signal, noise, signz (i.e. both), or none - this defaults to 'none' if no manipulation is applied
 p.addParamValue('ITD_us', 0, @isnumeric); % ITD in microseconds (if ITD is applied) - this defaults to 0 if ITD is not applied
+p.addParameter('RMEslider','TRUE',@ischar); % ajust sliders on RME TotalMix if necesary - TRUE or FALSE
 
 p.parse(ListenerName, varargin{:});
 
