@@ -621,9 +621,9 @@ waitforbuttonpress;
 % FinishButton; % indicate test is over
 
 if player==1
-    % close psych toolbox audio
-    PsychPortAudio('DeleteBuffer');
-    PsychPortAudio('Close');
+    if playrec('isInitialised')
+        playrec('reset');
+    end
 end
 
 function name = construct_filename(SentenceIndicator,list, sentence)
