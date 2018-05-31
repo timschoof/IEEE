@@ -178,8 +178,9 @@ end
 [InRMS, OutRMS] = SetLevels(VolumeSettingsFile);
 
 % extract level from VolumeSettingsFile
-Num = regexp(VolumeSettingsFile,'\d');
-Level = VolumeSettingsFile(Num);
+% Num = regexp(VolumeSettingsFile,'\d');
+% Level = VolumeSettingsFile(Num);
+Level = dBSPL;
     
 %% Set RME Slider
 if strcmp(RMEslider,'TRUE')
@@ -260,9 +261,9 @@ SummaryOutFile = fullfile(OutputDir, [FileListenerName '_sum.csv']);
 % write some headings and preliminary information to the output file
 fout = fopen(OutFile, 'at');
 if strcmp(SentenceType,'BKB') || strcmp(SentenceType,'ASL')
-    fprintf(fout, 'listener,date,sTime,trial,targets,masker,VolumeSettings,manipulation,lateralized,ITD,SNR,wave,w1,w2,w3,total,rTime,revs');
+    fprintf(fout, 'listener,date,sTime,trial,targets,masker,dBSPL,manipulation,lateralized,ITD,SNR,wave,w1,w2,w3,total,rTime,revs');
 else
-    fprintf(fout, 'listener,date,sTime,trial,targets,masker,VolumeSettings,manipulation,lateralized,ITD,SNR,wave,w1,w2,w3,w4,w5,total,rTime,revs');
+    fprintf(fout, 'listener,date,sTime,trial,targets,masker,dBSPL,manipulation,lateralized,ITD,SNR,wave,w1,w2,w3,w4,w5,total,rTime,revs');
 end
 
 fclose(fout);
@@ -404,7 +405,7 @@ while (num_turns<FINAL_TURNS  && limit<=MaxBumps && trial<MaxTrials)
         end
     end
     
-    %     y = [y;y;y;y;y;y;y;y]; % for calibration
+%     y = [y;y;y;y;y;y;y;y]; % for calibration
     
     % intialize playrec
     if player == 1 % if you're using playrec
@@ -537,7 +538,7 @@ EndTimeString=sprintf('%02d:%02d:%02d',EndTime(4),EndTime(5),EndTime(6));
 
 %% output summary statistics
 fout = fopen(SummaryOutFile, 'at');
-fprintf(fout, 'listener,date,sTime,endTime,type,stimuli,masker,condition,TestType,startSNR,feedback,ear,changes,VolumeSettings,manipulation,lateralised,ITD,version');
+fprintf(fout, 'listener,date,sTime,endTime,type,stimuli,masker,condition,TestType,startSNR,feedback,ear,changes,dBSPL,manipulation,lateralised,ITD,version');
 fprintf(fout, ',finish,uRevs,sdRevs,nRevs,nTrials,totKWc,totKW,uKW,sdKW');
 %                 L  S  S  E  S  S  T dB  c fd ear cv vs
 fprintf(fout, '\n%s,%s,%s,%s,%s,%s,%s,%s,%s,%g,%d,%s,%s,%s,%s,%s,%+5.1f,%s', ...
