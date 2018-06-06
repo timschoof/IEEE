@@ -109,8 +109,9 @@ mInputArgs = varargin;
 min_num_turns = 3;
 max_std = 4;
 
-% initialise the random number generator on the basis of the time
-rand('twister', sum(100*clock));
+% % initialise the random number generator on the basis of the time
+% rand('twister', sum(100*clock));
+rng('shuffle')
 
 %% Get audio device ID based on the USB name of the device.
 if player == 1 % if you're using playrec

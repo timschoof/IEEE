@@ -1,10 +1,10 @@
-nBlocks,nPracticeTrials,practice,TestType,ear,SentenceDirectory,InitialSNR_dB,MaxTrials,ListNumber,NoiseFile,dBSPL,itd_invert,lateralize,,
-0,5,5,adaptiveUp,B,IEEE,0,5,8,SpNz44100_8kHz,80,inverted,signal,,
-1,0,0,adaptiveUp,B,IEEE,-12,20,25,SpNz44100_8kHz,40,none,none,This will be rather quiet,
-1,0,0,adaptiveUp,B,IEEE,-15,20,19,SpNz44100_8kHz,40,inverted,signal,This will be rather quiet,
-1,0,0,adaptiveUp,B,IEEE,-12,20,29,SpNz44100_8kHz,80,none,none,This will be fairly loud,
-1,0,0,adaptiveUp,B,IEEE,-12,20,21,SpNz44100_8kHz,40,none,none,This will be rather quiet,
-1,0,0,adaptiveUp,B,IEEE,-15,20,23,SpNz44100_8kHz,40,inverted,signal,This will be rather quiet,
-1,0,0,adaptiveUp,B,IEEE,-15,20,31,SpNz44100_8kHz,80,inverted,signal,This will be fairly loud,
-1,0,0,adaptiveUp,B,IEEE,-12,20,33,SpNz44100_8kHz,80,none,none,This will be fairly loud,
-1,0,0,adaptiveUp,B,IEEE,-15,20,27,SpNz44100_8kHz,80,inverted,signal,This will be fairly loud,
+nBlocks,nPracticeTrials,practice,TestType,ear,SentenceDirectory,InitialSNR_dB,MaxTrials,ListNumber,NoiseFile,dBSPL,itd_invert,lateralize,StartMessage
+0,5,5,adaptiveUp,B,IEEE8kHz,0,5,8,SpNz44100_8kHz,80,inverted,signal,
+1,0,0,adaptiveUp,B,IEEE8kHz,-12,20,25,SpNz44100_8kHz,40,none,none,This will be rather quiet
+1,0,0,adaptiveUp,B,IEEE8kHz,-15,20,19,SpNz44100_8kHz,40,inverted,signal,This will be rather quiet
+1,0,0,adaptiveUp,B,IEEE8kHz,-12,20,29,SpNz44100_8kHz,80,none,none,This will be fairly loud
+1,0,0,adaptiveUp,B,IEEE8kHz,-12,20,21,SpNz44100_8kHz,40,none,none,This will be rather quiet
+1,0,0,adaptiveUp,B,IEEE8kHz,-15,20,23,SpNz44100_8kHz,40,inverted,signal,This will be rather quiet
+1,0,0,adaptiveUp,B,IEEE8kHz,-15,20,31,SpNz44100_8kHz,80,inverted,signal,This will be fairly loud
+1,0,0,adaptiveUp,B,IEEE8kHz,-12,20,33,SpNz44100_8kHz,80,none,none,This will be fairly loud
+1,0,0,adaptiveUp,B,IEEE8kHz,-15,20,27,SpNz44100_8kHz,80,inverted,signal,This will be fairly loud
