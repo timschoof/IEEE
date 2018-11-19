@@ -95,7 +95,7 @@ player = 1; % are you using playrec? yes = 1, no = 0
 
 DEBUG=0;
 OutputDir = 'results';
-MAX_SNR_dB = 18;
+MAX_SNR_dB = 15;
 SentenceNumber=1; % can be modified if list number is not an integer
 START_change_dB = 6.0;
 MIN_change_dB = 2.0;
@@ -250,11 +250,11 @@ if practice > 0
     FileListenerName=[ListenerName '_practice_' StartDate '_' FileNamingStartTime];
 else
     if strcmp(itd_invert,'ITD')
-        FileListenerName=[ListenerName '_' num2str(ITD_us) 'us_' itd_invert '_' lateralize '_' StartDate '_' FileNamingStartTime];
+        FileListenerName=[ListenerName '_' num2str(Level) '_' num2str(ITD_us) 'us_' itd_invert '_' lateralize '_' StartDate '_' FileNamingStartTime];
     elseif strcmp(itd_invert,'inverted')
-        FileListenerName=[ListenerName '_' itd_invert '_' lateralize '_' StartDate '_' FileNamingStartTime];
+        FileListenerName=[ListenerName '_' num2str(Level) '_' itd_invert '_' lateralize '_' StartDate '_' FileNamingStartTime];
     elseif strcmp(itd_invert,'none')
-        FileListenerName=[ListenerName '_' itd_invert '_' StartDate '_' FileNamingStartTime];
+        FileListenerName=[ListenerName '_' num2str(Level) '_' itd_invert '_' StartDate '_' FileNamingStartTime];
     end
 end
 OutFile = fullfile(OutputDir, [FileListenerName '.csv']);
@@ -454,7 +454,7 @@ while (num_turns<FINAL_TURNS  && limit<=MaxBumps && trial<MaxTrials)
     % fprintf(fout, 'listener,date,sTime,trial,targets,masker,VolumeSettings,manipulation,lateralized,ITD,SNR,wave,w1,w2,w3,total,rTime,revs');
     if strcmp(SentenceType,'BKB') || strcmp(SentenceType,'ASL')
         fprintf(fout, '\n%s,%s,%s,%d,%s,%s,%s,%s,%s,%+5.1f,%+5.1f,%s,%d,%d,%d,%d,%s', ...
-            ListenerName,StartDate,StartTimeString,trial,SentenceDirectory,NoiseFile,Level,itd_invert,lateralize,ITD_us,SNR_dB,InFileName,...
+            ListenerName,StartDate,StartTimeString,trial,SentenceDirectory,NoiseFile,num2str(Level),itd_invert,lateralize,ITD_us,SNR_dB,InFileName,...
             response(1),response(2),response(3),sum(response),...
             TimeOfResponse);
         % give optional auditory feedback
@@ -463,7 +463,7 @@ while (num_turns<FINAL_TURNS  && limit<=MaxBumps && trial<MaxTrials)
         end
     else
         fprintf(fout, '\n%s,%s,%s,%d,%s,%s,%s,%s,%s,%+5.1f,%+5.1f,%s,%d,%d,%d,%d,%d,%d,%s', ...
-            ListenerName,StartDate,StartTimeString,trial,SentenceDirectory,NoiseFile,Level,itd_invert,lateralize,ITD_us,SNR_dB,InFileName,...
+            ListenerName,StartDate,StartTimeString,trial,SentenceDirectory,NoiseFile,num2str(Level),itd_invert,lateralize,ITD_us,SNR_dB,InFileName,...
             response(1),response(2),response(3),response(4),response(5),sum(response),...
             TimeOfResponse);
         if sum(response)==5
@@ -545,7 +545,7 @@ fprintf(fout, ',finish,uRevs,sdRevs,nRevs,nTrials,totKWc,totKW,uKW,sdKW');
 fprintf(fout, '\n%s,%s,%s,%s,%s,%s,%s,%s,%s,%g,%d,%s,%s,%s,%s,%s,%+5.1f,%s', ...
     ListenerName,StartDate,StartTimeString,EndTimeString,...
     SentenceType,SentenceDirectory,NoiseFile,condition,TestType,InitialSNR_dB,...
-    AudioFeedback,ear,sprintf('%d ',CHANGE_VECTOR),Level,itd_invert,lateralize,ITD_us,VERSION);
+    AudioFeedback,ear,sprintf('%d ',CHANGE_VECTOR),num2str(Level),itd_invert,lateralize,ITD_us,VERSION);
 
 
 %  % print out summary statistics -- how did we get here?
