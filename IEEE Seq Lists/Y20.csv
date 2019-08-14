@@ -1,0 +1,2 @@
+nBlocks,nPracticeTrials,practice,TestType,ear,SentenceDirectory,InitialSNR_dB,MaxTrials,ListNumber,NoiseFile,dBSPL,itd_invert,lateralize,StartMessage
+1,0,0,adaptiveUp,B,IEEE,-12,20,35,SpNz44100_8kHz,80,inverted,signal,This will be fairly loud

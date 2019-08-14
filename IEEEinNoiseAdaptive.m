@@ -91,11 +91,11 @@ function IEEEinNoiseAdaptive(varargin)
 
 %% initialisations
 VERSION='HHL';
-player = 0; % are you using playrec? yes = 1, no = 0
+player = 1; % are you using playrec? yes = 1, no = 0
 
 DEBUG=0;
 OutputDir = 'results';
-MAX_SNR_dB = 18;
+MAX_SNR_dB = 15;
 SentenceNumber=1; % can be modified if list number is not an integer
 START_change_dB = 6.0;
 MIN_change_dB = 2.0;
@@ -109,14 +109,16 @@ mInputArgs = varargin;
 min_num_turns = 3;
 max_std = 4;
 
-% initialise the random number generator on the basis of the time
-rand('twister', sum(100*clock));
+% % initialise the random number generator on the basis of the time
+% rand('twister', sum(100*clock));
+rng('shuffle')
 
 %% Get audio device ID based on the USB name of the device.
 if player == 1 % if you're using playrec
-    %dev = playrec('getDevices');
-    playDeviceInd = 50; % RME FireFace channels 3+4
-    recDeviceInd = 50;
+    dev = playrec('getDevices');
+    d = find( cellfun(@(x)isequal(x,'ASIO Fireface USB'),{dev.name}) ); % find device of interest - RME FireFace channels 3+4
+    playDeviceInd = dev(d).deviceID; 
+    recDeviceInd = dev(d).deviceID;
 end
 
 %% get control parameters one way or t'other
@@ -124,7 +126,7 @@ if nargin==0
     StartMessage='Here we go!';
     [OutFile, TestType, ear, SentenceDirectory, InitialSNR_dB, START_change_dB, ...
         AudioFeedback, MaxTrials, ListNumber, TrackingLevel, ...
-        NoiseFile,VolumeSettingsFile,itd_invert,lateralize,ITD_us] = TestSpecs(mInputArgs);
+        NoiseFile,itd_invert,VolumeSettingsFile,lateralize,ITD_us,RMEslider] = TestSpecs(mInputArgs);
     
 else % pick up defaults and specified values from args
     if ~rem(nargin,2)
@@ -175,6 +177,26 @@ end
 
 %% Settings for level
 [InRMS, OutRMS] = SetLevels(VolumeSettingsFile);
+
+% extract level from VolumeSettingsFile
+% Num = regexp(VolumeSettingsFile,'\d');
+% Level = VolumeSettingsFile(Num);
+Level = dBSPL;
+    
+%% Set RME Slider
+if strcmp(RMEslider,'TRUE')
+    % read in RME settings file
+    RMEsetting=robustcsvread('RMEsettings.csv');
+    % select columns with relevant info
+    LevelCol=strmatch('dBSPL',strvcat(RMEsetting{1,:}));
+    SliderCol=strmatch('slider',strvcat(RMEsetting{1,:}));
+    % find index of dBSPL level
+    index = find(strcmp({RMEsetting{:,LevelCol}}, num2str(Level)));
+    % find the corresponding RME slider setting
+    RMEattn = RMEsetting{index,SliderCol};
+    % set RME slider
+    SetMainSlider(str2double(RMEattn))
+end
 
 %% set rules for adaptively altering levels
 if strcmp(SentenceType,'IEE')|| strcmp(SentenceType,'ABC')
@@ -228,11 +250,11 @@ if practice > 0
     FileListenerName=[ListenerName '_practice_' StartDate '_' FileNamingStartTime];
 else
     if strcmp(itd_invert,'ITD')
-        FileListenerName=[ListenerName '_' num2str(ITD_us) 'us_' itd_invert '_' lateralize '_' StartDate '_' FileNamingStartTime];
+        FileListenerName=[ListenerName '_' num2str(Level) '_' num2str(ITD_us) 'us_' itd_invert '_' lateralize '_' StartDate '_' FileNamingStartTime];
     elseif strcmp(itd_invert,'inverted')
-        FileListenerName=[ListenerName '_' itd_invert '_' lateralize '_' StartDate '_' FileNamingStartTime];
+        FileListenerName=[ListenerName '_' num2str(Level) '_' itd_invert '_' lateralize '_' StartDate '_' FileNamingStartTime];
     elseif strcmp(itd_invert,'none')
-        FileListenerName=[ListenerName '_' itd_invert '_' StartDate '_' FileNamingStartTime];
+        FileListenerName=[ListenerName '_' num2str(Level) '_' itd_invert '_' StartDate '_' FileNamingStartTime];
     end
 end
 OutFile = fullfile(OutputDir, [FileListenerName '.csv']);
@@ -240,9 +262,9 @@ SummaryOutFile = fullfile(OutputDir, [FileListenerName '_sum.csv']);
 % write some headings and preliminary information to the output file
 fout = fopen(OutFile, 'at');
 if strcmp(SentenceType,'BKB') || strcmp(SentenceType,'ASL')
-    fprintf(fout, 'listener,date,sTime,trial,targets,masker,VolumeSettings,manipulation,lateralized,ITD,SNR,wave,w1,w2,w3,total,rTime,revs');
+    fprintf(fout, 'listener,date,sTime,trial,targets,masker,dBSPL,manipulation,lateralized,ITD,SNR,wave,w1,w2,w3,total,rTime,revs');
 else
-    fprintf(fout, 'listener,date,sTime,trial,targets,masker,VolumeSettings,manipulation,lateralized,ITD,SNR,wave,w1,w2,w3,w4,w5,total,rTime,revs');
+    fprintf(fout, 'listener,date,sTime,trial,targets,masker,dBSPL,manipulation,lateralized,ITD,SNR,wave,w1,w2,w3,w4,w5,total,rTime,revs');
 end
 
 fclose(fout);
@@ -285,7 +307,8 @@ if strcmp(TestType,'adaptiveUp')
 end
 
 %% wait to start
-Image = imread('benzilan.jpg','jpg');
+Image = imread('DP119115(640x472).jpg','jpg');
+% Print appropriate message on Go button
 GoOrMessageButton('String', StartMessage, Image)
 
 nCorrect=[]; % keep track of the number of key words correct in each sentence
@@ -383,12 +406,11 @@ while (num_turns<FINAL_TURNS  && limit<=MaxBumps && trial<MaxTrials)
         end
     end
     
-    %     y = [y;y;y;y;y;y;y;y]; % for calibration
+%     y = [y;y;y;y;y;y;y;y]; % for calibration
     
     % intialize playrec
     if player == 1 % if you're using playrec
         if playrec('isInitialised')
-            fprintf('Resetting playrec as previously initialised\n');
             playrec('reset');
         end
         playrec('init', Fs, playDeviceInd, recDeviceInd);
@@ -427,16 +449,12 @@ while (num_turns<FINAL_TURNS  && limit<=MaxBumps && trial<MaxTrials)
     
     AllCorrect=0;
         
-    % extract level from VolumeSettingsFile
-    Num = regexp(VolumeSettingsFile,'\d');
-    Level = VolumeSettingsFile(Num);
-    
     fout = fopen(OutFile, 'at');
     % print out relevant information
     % fprintf(fout, 'listener,date,sTime,trial,targets,masker,VolumeSettings,manipulation,lateralized,ITD,SNR,wave,w1,w2,w3,total,rTime,revs');
     if strcmp(SentenceType,'BKB') || strcmp(SentenceType,'ASL')
         fprintf(fout, '\n%s,%s,%s,%d,%s,%s,%s,%s,%s,%+5.1f,%+5.1f,%s,%d,%d,%d,%d,%s', ...
-            ListenerName,StartDate,StartTimeString,trial,SentenceDirectory,NoiseFile,Level,itd_invert,lateralize,ITD_us,SNR_dB,InFileName,...
+            ListenerName,StartDate,StartTimeString,trial,SentenceDirectory,NoiseFile,num2str(Level),itd_invert,lateralize,ITD_us,SNR_dB,InFileName,...
             response(1),response(2),response(3),sum(response),...
             TimeOfResponse);
         % give optional auditory feedback
@@ -445,7 +463,7 @@ while (num_turns<FINAL_TURNS  && limit<=MaxBumps && trial<MaxTrials)
         end
     else
         fprintf(fout, '\n%s,%s,%s,%d,%s,%s,%s,%s,%s,%+5.1f,%+5.1f,%s,%d,%d,%d,%d,%d,%d,%s', ...
-            ListenerName,StartDate,StartTimeString,trial,SentenceDirectory,NoiseFile,Level,itd_invert,lateralize,ITD_us,SNR_dB,InFileName,...
+            ListenerName,StartDate,StartTimeString,trial,SentenceDirectory,NoiseFile,num2str(Level),itd_invert,lateralize,ITD_us,SNR_dB,InFileName,...
             response(1),response(2),response(3),response(4),response(5),sum(response),...
             TimeOfResponse);
         if sum(response)==5
@@ -521,13 +539,13 @@ EndTimeString=sprintf('%02d:%02d:%02d',EndTime(4),EndTime(5),EndTime(6));
 
 %% output summary statistics
 fout = fopen(SummaryOutFile, 'at');
-fprintf(fout, 'listener,date,sTime,endTime,type,stimuli,masker,condition,TestType,startSNR,feedback,ear,changes,VolumeSettings,manipulation,lateralised,ITD,version');
+fprintf(fout, 'listener,date,sTime,endTime,type,stimuli,masker,condition,TestType,startSNR,feedback,ear,changes,dBSPL,manipulation,lateralised,ITD,version');
 fprintf(fout, ',finish,uRevs,sdRevs,nRevs,nTrials,totKWc,totKW,uKW,sdKW');
 %                 L  S  S  E  S  S  T dB  c fd ear cv vs
 fprintf(fout, '\n%s,%s,%s,%s,%s,%s,%s,%s,%s,%g,%d,%s,%s,%s,%s,%s,%+5.1f,%s', ...
     ListenerName,StartDate,StartTimeString,EndTimeString,...
     SentenceType,SentenceDirectory,NoiseFile,condition,TestType,InitialSNR_dB,...
-    AudioFeedback,ear,sprintf('%d ',CHANGE_VECTOR),Level,itd_invert,lateralize,ITD_us,VERSION);
+    AudioFeedback,ear,sprintf('%d ',CHANGE_VECTOR),num2str(Level),itd_invert,lateralize,ITD_us,VERSION);
 
 
 %  % print out summary statistics -- how did we get here?
@@ -605,9 +623,9 @@ waitforbuttonpress;
 % FinishButton; % indicate test is over
 
 if player==1
-    % close psych toolbox audio
-    PsychPortAudio('DeleteBuffer');
-    PsychPortAudio('Close');
+    if playrec('isInitialised')
+        playrec('reset');
+    end
 end
 
 function name = construct_filename(SentenceIndicator,list, sentence)

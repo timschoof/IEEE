@@ -116,14 +116,11 @@ if length(varargin{1})>1
                 otherwise
                     error('Illegal option for feedback: must be 0 or 1');
             end
-        elseif strcmp('NAL', varargin{1}(index))
-            switch lower(char(varargin{1}(index+1)))
-                case 'nal'
-                    set(handles.nal,'Value',1);
-                case 'normal'
-                    set(handles.normal,'Value',1);
-                otherwise
-                    error('Illegal option for ear: must be b(oth), u(nshifted), s(hifted)');
+        elseif strcmpi('RMEslider', varargin{1}(index))
+            if strcmpi('Slide', char(varargin{1}(index+1)))
+                set(handles.adaptiveUp,'Value',1);
+            else
+                set(handles.fixed,'noSlide',1)
             end
         elseif strcmpi('ITD_us', varargin{1}(index))
             set(handles.itd_us,'String',num2str(cell2mat(varargin{1}(index+1))));
@@ -180,11 +177,11 @@ varargout{8} = handles.Max;
 varargout{9} = handles.nList;
 varargout{10} = handles.tl;
 varargout{11} = handles.Nz;
-varargout{12} = handles.NAL;
+varargout{12} = handles.itd_invert;
 varargout{13} = handles.VolumeSettingsFile;
-varargout{14} = handles.itd_invert;
-varargout{15} = handles.lateralize;
-varargout{16} = handles.itd_us;
+varargout{14} = handles.lateralize;
+varargout{15} = handles.itd_us;
+varargout{16} = handles.RMEslider;
 
 % The figure can be deleted now
 delete(handles.figure1);
@@ -294,6 +291,11 @@ elseif get(handles.AdaptiveDown,'Value')
 else
     handles.AorF='fixed';
 end
+if get(handles.Slide,'Value')
+    handles.RMEslider='TRUE';
+elseif get(handles.noSlide,'Value')
+    handles.RMEslider='FALSE';
+end
 if get(handles.Both,'Value')
     handles.Ear='B';
 elseif get(handles.Left,'Value')
@@ -312,11 +314,6 @@ if get(handles.track30,'Value')
     handles.tl=30;
 else
     handles.tl=50;
-end
-if get(handles.nal,'Value')
-    handles.NAL='nal';
-elseif get(handles.normal,'Value')
-    handles.NAL='normal';
 end
 if get(handles.signal,'Value')
     handles.lateralize='signal';
